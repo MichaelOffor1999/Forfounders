@@ -1,0 +1,51 @@
+# --- ENV / Secrets ---
+.env
+.env.*
+*.pem
+*.key
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.vite/
+coverage/
+storybook-static/
+*.log
+
+# --- Python / Backend ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.Python
+venv/
+.mypy_cache/
+.pytest_cache/
+.cache/
+
+# --- Tools / IDE ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sqlite3
+
+# --- Package managers ---
+.pnpm-store/
+.npm/
+.yarn/
+.yarn/cache/
+yarn-error.log
+
+# --- Generic build artifacts ---
+*.tar
+*.gz
+*.zip
