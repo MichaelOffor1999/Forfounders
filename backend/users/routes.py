@@ -86,6 +86,7 @@ def update_profile():
                       'profile_picture',
                       'purpose',
                       'specialization',
+                      'lookingFor',
                       'current_project']
 
     update_data = {field: data[field] for field in allowed_fields if field in data}
@@ -103,6 +104,7 @@ def update_profile():
             updated_user.get('name'),
             updated_user.get('bio'),
             updated_user.get('purpose'),
+            updated_user.get('lookingFor') and isinstance(updated_user.get('lookingFor'), list) and len(updated_user.get('lookingFor')) > 0,
             updated_user.get('tags') and isinstance(updated_user.get('tags'), list) and len(updated_user.get('tags')) > 0
         ])
 

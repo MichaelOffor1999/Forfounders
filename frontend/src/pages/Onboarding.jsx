@@ -6,6 +6,7 @@ import apiRequest from "../api.js";
 const steps = [
   "Purpose for Joining",
   "Tags & Skills",
+  "Looking For",
   "Bio, Interests & Specialization"
 ];
 
@@ -26,7 +27,8 @@ export default function Onboarding() {
     specialization: "",
     profile_picture: "",
     purpose: "",
-    current_project: ""
+    current_project: "",
+    lookingFor: [] // New field added
   });
   const [currentTag, setCurrentTag] = useState(""); // New state for raw input
 
@@ -39,17 +41,21 @@ export default function Onboarding() {
     switch (step) {
       case 0:
         if (!profile.purpose) return "Purpose for joining is required.";
-        return "";
+        break;
       case 1:
         if (profile.tags.length === 0) return "Please select or add at least one tag.";
-        return "";
-      case 2:
+        break;
+      case 2: // Validation for the new step
+        if (!profile.lookingFor || profile.lookingFor.length === 0) return "Please select at least one option.";
+        break;
+      case 3:
         if (!profile.bio.trim()) return "Bio is required.";
         if (!profile.specialization.trim()) return "Specialization is required.";
-        return "";
+        break;
       default:
-        return "";
+        break;
     }
+    return "";
   };
 
   const renderStep = () => {
@@ -130,6 +136,36 @@ export default function Onboarding() {
           </>
         );
       case 2:
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block font-semibold mb-2">What are you looking for?</label>
+              <div className="flex flex-wrap gap-2">
+                {["Technical Co-Founder", "Business Co-Founder", "Design Co-Founder", "Marketing Co-Founder"].map(option => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`px-3 py-1 rounded-full border ${
+                      profile.lookingFor?.includes(option) ? "bg-[#0b3d91] text-white" : "bg-gray-100 text-gray-700"
+                    }`}
+                    onClick={() => {
+                      setProfile({
+                        ...profile,
+                        lookingFor: profile.lookingFor?.includes(option)
+                          ? profile.lookingFor.filter(item => item !== option)
+                          : [...(profile.lookingFor || []), option]
+                      });
+                    }}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-2">Select one or more options that describe what you're looking for.</div>
+          </>
+        );
+      case 3:
         return (
           <>
             <div className="mt-4 mb-6"> {/* Added margin-bottom for spacing */}
