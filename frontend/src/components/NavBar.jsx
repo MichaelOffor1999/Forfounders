@@ -16,7 +16,7 @@ const NavBar = () => {
                         <Link to="/discover" className="px-3 py-2 rounded transition-colors duration-200 hover:bg-blue-700 hover:text-white">Find Founders</Link>
                     </li>
                     <li>
-                        <Link to="/collab-hub" className="px-3 py-2 rounded transition-colors duration-200 hover:bg-blue-700 hover:text-white">Collab Hub</Link>
+                        <Link to="/wave-requests" className="px-3 py-2 rounded transition-colors duration-200 hover:bg-blue-700 hover:text-white">Wave Requests</Link>
                     </li>
                     <li>
                         <Link to="/messages" className="px-3 py-2 rounded transition-colors duration-200 hover:bg-blue-700 hover:text-white">Messages</Link>

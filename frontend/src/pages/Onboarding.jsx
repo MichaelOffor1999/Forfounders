@@ -10,7 +10,30 @@ const steps = [
   "Bio, Interests & Specialization"
 ];
 
+
 const suggestedTags = ["AI", "Frontend", "Backend", "Design", "Marketing", "Data Science", "Mobile", "Web", "Cloud", "DevOps"];
+
+// Predefined specialization categories
+const specializationOptions = [
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Data Scientist",
+  "Product Manager",
+  "Designer",
+  "Marketing Specialist",
+  "Mobile Developer",
+  "DevOps Engineer",
+  "AI/ML Engineer"
+];
+
+// Predefined 'looking for' categories
+const lookingForOptions = [
+  "Technical Co-Founder",
+  "Business Co-Founder",
+  "Design Co-Founder",
+  "Marketing Co-Founder"
+];
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -50,7 +73,14 @@ export default function Onboarding() {
         break;
       case 3:
         if (!profile.bio.trim()) return "Bio is required.";
-        if (!profile.specialization.trim()) return "Specialization is required.";
+        // If 'Other' is selected, require customSpecialization
+        if (profile.specialization === "custom") {
+          if (!profile.customSpecialization || !profile.customSpecialization.trim()) {
+            return "Please specify your specialization.";
+          }
+        } else {
+          if (!profile.specialization.trim()) return "Specialization is required.";
+        }
         break;
       default:
         break;
@@ -141,7 +171,7 @@ export default function Onboarding() {
             <div className="mb-4">
               <label className="block font-semibold mb-2">What are you looking for?</label>
               <div className="flex flex-wrap gap-2">
-                {["Technical Co-Founder", "Business Co-Founder", "Design Co-Founder", "Marketing Co-Founder"].map(option => (
+                {lookingForOptions.map(option => (
                   <button
                     key={option}
                     type="button"
@@ -168,7 +198,7 @@ export default function Onboarding() {
       case 3:
         return (
           <>
-            <div className="mt-4 mb-6"> {/* Added margin-bottom for spacing */}
+            <div className="mt-4 mb-6">
               <label className="block font-semibold mb-2 text-center">Profile Picture</label>
               <div className="flex flex-col items-center gap-4">
                 {profile.profile_picture ? (
@@ -212,13 +242,29 @@ export default function Onboarding() {
               onChange={e => setProfile({ ...profile, bio: e.target.value })}
               className="w-full px-6 py-3 rounded-3xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-[#0b3d91]/8 focus:border-[#0b3d91] transition-all duration-200 mb-4"
             />
-            <input
-              type="text"
-              placeholder="Specialization"
-              value={profile.specialization}
-              onChange={e => setProfile({ ...profile, specialization: e.target.value })}
-              className="w-full px-6 py-3 rounded-3xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-[#0b3d91]/8 focus:border-[#0b3d91] transition-all duration-200 mb-4"
-            />
+            <div className="mb-4">
+              <label className="block font-semibold mb-2">Specialization</label>
+              <select
+                value={profile.specialization}
+                onChange={e => setProfile({ ...profile, specialization: e.target.value })}
+                className="w-full px-6 py-3 rounded-3xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-[#0b3d91]/8 focus:border-[#0b3d91] transition-all duration-200 mb-2"
+              >
+                <option value="" disabled>Select your specialization</option>
+                {specializationOptions.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+                <option value="custom">Other (please specify below)</option>
+              </select>
+              {profile.specialization === "custom" && (
+                <input
+                  type="text"
+                  placeholder="Enter your specialization"
+                  value={profile.customSpecialization || ""}
+                  onChange={e => setProfile({ ...profile, customSpecialization: e.target.value })}
+                  className="w-full px-6 py-3 rounded-3xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-[#0b3d91]/8 focus:border-[#0b3d91] transition-all duration-200 mt-2"
+                />
+              )}
+            </div>
             <button
               className="w-full py-3 px-6 bg-[#0b3d91] text-white font-semibold rounded-3xl shadow-md hover:shadow-lg transition-all duration-150 mt-4"
               onClick={handleFinish}
@@ -241,20 +287,20 @@ export default function Onboarding() {
             body: JSON.stringify(profile)
         });
 
-        // Replace the temporary token with the new token if provided
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-        }
-
-        setSuccess(true);
-        setTimeout(() => {
-            navigate("/dashboard");
-        }, 1200);
-    } catch (err) {
-        setError("Error saving profile: " + err.message);
-    } finally {
-        setLoading(false);
+    // Replace the temporary token with the new token if provided
+    if (data.token) {
+      localStorage.setItem("token", data.token);
     }
+
+    setSuccess(true);
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1200);
+  } catch (err) {
+    setError("Error saving profile: " + err.message);
+  } finally {
+    setLoading(false);
+  }
 };
 
   return (

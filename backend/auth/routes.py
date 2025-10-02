@@ -36,6 +36,7 @@ def register():
             return jsonify({"msg": "Email and password required"}), 400
 
         if users.find_one({'email': data['email']}):
+            print("here") #this is cousing the issue
             return jsonify({'msg': 'Email already exists'}), 400
         
 

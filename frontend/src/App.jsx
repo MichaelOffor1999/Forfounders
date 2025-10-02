@@ -10,6 +10,8 @@ import { Dashboard } from './pages/Dashboard.jsx'
 import { Discovery } from "./pages/Discovery.jsx"
 import { Register } from "./pages/Register" 
 import Onboarding from "./pages/Onboarding"
+import WaveRequests from "./pages/WaveRequests.jsx";
+import Messages from "./pages/Messages.jsx";
 
 
 function App() {
@@ -44,6 +46,22 @@ function App() {
           }
         />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route 
+          path="/wave-requests" 
+          element={
+            <ProtectedRoute>
+              <WaveRequests />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/messages" 
+          element={
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
   </BrowserRouter>
   );

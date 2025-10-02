@@ -16,6 +16,11 @@ export function Discovery () {
             const data = await apiRequest("/discovery");
             const p = data?.user ?? null;
             setProfile(p || null);
+            if(profile){
+                console.log("True")
+            }else{
+                console.log("Empty buddy")
+            }
         }catch (e) {
             setErr(e.message);
             setProfile(null);
@@ -28,16 +33,25 @@ export function Discovery () {
     async function act(action) {
         if(!profile) return;
         const {id} = profile;
+        if(id){
+            console.log("We have one!")
+        }else{
+            console.log("Theres no id")
+        }
         setLoading(true);
         setErr("");
         setMsg("");
 
+        
+
         try{
             const data = await apiRequest(`/${action}/${id}`, {method: "POST"});
             setMsg(data.msg);
+            console.log(data.msg);
             await loadNext();
         }catch (e) {
             setErr(e.message);
+            console.log(e.msg);
         }finally{
             setLoading(false);
         }
@@ -50,7 +64,14 @@ export function Discovery () {
 
     if (loading) return <div style={{ padding: 16 }}>Loading…</div>;
     if (err) return <div style={{ padding: 16, color: "crimson" }}>{err}</div>;
-    if (!profile) return <div style={{ padding: 16 }}>No more profiles to discover.</div>;
+    if (!profile) {
+        return (
+            <>
+                <NavBar />
+                <div style={{ padding: 16 }}>No more profiles to discover.</div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -64,56 +85,52 @@ export function Discovery () {
                     />
                     <div style={{ padding: 16 }}>
                         <h2 style={{ margin: "12px 0" }}>{profile.name}</h2>
-                        <p style={{ color: "#555", fontStyle: "italic" }}>{profile.headline || "No headline provided"}</p>
+                        <p style={{ color: "#555", fontStyle: "italic" }}>{profile.specialization || "No specialization provided"}</p>
                         <p style={{ color: "#555" }}>{profile.course} • {profile.campus} • {profile.location || "Location not specified"}</p>
 
-                        {profile.about && (
+                        {/* Looking For Section */}
+                        {Array.isArray(profile.lookingFor) && profile.lookingFor.length > 0 && (
                             <div style={{ margin: "12px 0" }}>
-                                <h4>About Me:</h4>
-                                <p style={{ color: "#555" }}>{profile.about}</p>
-                            </div>
-                        )}
-
-                        {Array.isArray(profile.hobbies) && profile.hobbies.length > 0 && (
-                            <div style={{ margin: "12px 0" }}>
-                                <h4>Hobbies:</h4>
+                                <h4>Looking For:</h4>
                                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                    {profile.hobbies.map((hobby) => (
+                                    {profile.lookingFor.map((item) => (
                                         <span
-                                            key={hobby}
+                                            key={item}
                                             style={{
-                                                border: "1px solid #ddd",
+                                                border: "1px solid #007bff",
                                                 borderRadius: 12,
                                                 padding: "4px 12px",
-                                                backgroundColor: "#f9f9f9",
+                                                backgroundColor: "#eaf4ff",
                                             }}
                                         >
-                                            {hobby}
+                                            {item}
                                         </span>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* Achievements/Highlights Section */}
-                        <div style={{ marginTop: 16, textAlign: "left" }}>
-                            <h3>Achievements & Highlights</h3>
-                            <ul style={{ paddingLeft: 20 }}>
-                                <li>Dean's List 2024</li>
-                                <li>Hackathon Winner</li>
-                                <li>Published Research Paper</li>
-                            </ul>
-                        </div>
-
-                        {/* Skills Section */}
-                        <div style={{ marginTop: 16, textAlign: "left" }}>
-                            <h3>Skills</h3>
-                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                <span style={{ border: "1px solid #ddd", borderRadius: 12, padding: "4px 12px", backgroundColor: "#f1f1f1" }}>Python</span>
-                                <span style={{ border: "1px solid #ddd", borderRadius: 12, padding: "4px 12px", backgroundColor: "#f1f1f1" }}>Machine Learning</span>
-                                <span style={{ border: "1px solid #ddd", borderRadius: 12, padding: "4px 12px", backgroundColor: "#f1f1f1" }}>Public Speaking</span>
+                        {/* Tags Section */}
+                        {Array.isArray(profile.tags) && profile.tags.length > 0 && (
+                            <div style={{ margin: "12px 0" }}>
+                                <h4>Tags:</h4>
+                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                                    {profile.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            style={{
+                                                border: "1px solid #28a745",
+                                                borderRadius: 12,
+                                                padding: "4px 12px",
+                                                backgroundColor: "#eafbe7",
+                                            }}
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 

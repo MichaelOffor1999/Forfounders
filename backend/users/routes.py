@@ -6,7 +6,32 @@ from datetime import datetime
 
 users_bp = Blueprint('users', __name__)
 
-
+@users_bp.route('/profiles', methods=['POST'])
+@jwt_required()
+def get_profiles():
+    mongo = current_app.mongo
+    users = mongo.db.users
+    ids = request.json.get('ids', [])
+    if not isinstance(ids, list) or not ids:
+        return jsonify({'msg': 'No user IDs provided'}), 400
+    object_ids = []
+    for uid in ids:
+        try:
+            object_ids.append(ObjectId(uid))
+        except Exception:
+            pass
+    profiles = list(users.find({'_id': {'$in': object_ids}}))
+    result = []
+    for user in profiles:
+        result.append({
+            'id': str(user['_id']),
+            'name': user.get('name', ''),
+            'profile_picture': user.get('profile_picture', ''),
+            'specialization': user.get('specialization', ''),
+            'campus': user.get('campus', ''),
+            'course': user.get('course', ''),
+        })
+    return jsonify({'profiles': result}), 200
 
 @users_bp.route('/me', methods=['GET'])
 @jwt_required() #figure out how this workes in the frontend
@@ -60,7 +85,8 @@ def get_profile():
         },
         'completion_percentage': calculate_profile_completion(user),
         'profile_completed': profile_completed,
-        'projects': user.get('projects', [])  # Fetch projects from the user document
+        'projects': user.get('projects', []),  # Fetch projects from the user document
+        'connected_users': user.get('connected_users', [])
     }
 
     return jsonify({'user': user_data}), 200
@@ -85,7 +111,7 @@ def update_profile():
                       'bio', 
                       'profile_picture',
                       'purpose',
-                      'specialization',
+                      'specialization',  # Accepts both predefined and custom values
                       'lookingFor',
                       'current_project']
 

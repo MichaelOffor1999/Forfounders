@@ -17,20 +17,19 @@ async function apiRequest(endpoint, options = {}){
         throw new Error("Unauthorized");
     }
 
-
     let data;
+    try {
+        data = await res.json();
+    } catch (err) {
+        data = {};
+    }
 
     if(!res.ok){
-        throw new Error(data.error || data.msg || res.statusText);
+        const error = new Error(data.msg || data.error || res.statusText);
+        error.status = res.status;
+        error.msg = data.msg;
+        throw error;
     }
-
-    try{
-        data = await res.json();
-    }catch(err){
-        data = {}
-    }
-
-    
 
     return data;
 }

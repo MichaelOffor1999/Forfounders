@@ -21,6 +21,8 @@ export function Register() {
             return;
         }
 
+        console.log("yess")
+
         setLoading(true);
 
         try {
@@ -28,7 +30,8 @@ export function Register() {
                 method: "POST",
                 body: JSON.stringify({ name, email, password }),
             });
-            setMsg(res.msg);
+                setMsg(res.msg || "Account created.");
+            console.log(res.msg);
 
             // Store the temporary token in localStorage
             if (res.token) {
@@ -37,7 +40,12 @@ export function Register() {
                 navigate("/onboarding", { replace: true });
             }
         } catch (e) {
-            setMsg(e.message);
+                // Try to get backend error message if available
+                if (e && e.msg) {
+                    setMsg(e.msg);
+                } else {
+                    setMsg(e.message || "An unexpected error occurred.");
+                }
         } finally {
             setLoading(false);
         }

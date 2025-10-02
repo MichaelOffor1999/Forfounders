@@ -8,6 +8,7 @@ from auth.routes import auth_bp
 from users.routes import users_bp
 from discovery.routes import discovery_bp
 import certifi
+from messages.routes import messages_bp
 
 
 app = Flask(__name__)
@@ -34,6 +35,7 @@ def health():
 app.register_blueprint(auth_bp, url_prefix='/api')
 app.register_blueprint(users_bp, url_prefix='/api')
 app.register_blueprint(discovery_bp, url_prefix='/api')
+app.register_blueprint(messages_bp, url_prefix='/api')
 
 
 if __name__ == '__main__':
