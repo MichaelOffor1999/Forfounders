@@ -14,7 +14,7 @@ from messages.routes import messages_bp
 app = Flask(__name__)
 app.config.from_object(Config)
 
-CORS(app)
+CORS(app, origins=["https://forfounders.vercel.app/"])
 mongo = PyMongo(app, tls=True, tlsCAFile=certifi.where(), tlsAllowInvalidCertificates=True)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
